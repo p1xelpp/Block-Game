@@ -40,8 +40,9 @@ if mode == "1":
 else:
     game = C00lWorld(network=net)
 
-# -------------------------
-# START GAME
-# -------------------------
-game.test_plane()
-game.start()
+# --------------------------------
+# START GAME (only if not mode 2)
+# --------------------------------
+if mode != "2":
+    game.test_plane()
+    game.start()
