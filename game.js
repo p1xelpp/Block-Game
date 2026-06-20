@@ -1,4 +1,5 @@
-import * as THREE from 'three';
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.164/build/three.module.js";
+
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 
 // Scene Setup
