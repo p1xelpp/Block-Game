@@ -1,9 +1,11 @@
-from ezy3d import C00lWorld
-from c00lnet import Server, ServerClient
 import argparse
+import sys
 
+# -------------------------
+# PARSE ARGS
+# -------------------------
 parser = argparse.ArgumentParser()
-parser.add_argument("--mode", choices=["1", "2", "3"], default="1", help="1=Singleplayer, 2=Host, 3=Join")
+parser.add_argument("--mode", choices=["1", "2", "3"], default="1")
 parser.add_argument("--port", type=int, default=27015)
 parser.add_argument("--ip", default="localhost")
 args = parser.parse_args()
@@ -12,37 +14,42 @@ mode = args.mode
 port = args.port
 ip = args.ip
 
-net = None
-server = None
-
 # -------------------------
-# MODE 2 = HOST SERVER
+# MODE 2 = HEADLESS (Render)
+# Ursina mag NIET geladen worden!
 # -------------------------
 if mode == "2":
+    from c00lnet import Server, ServerClient
+
+    print("Running in headless server mode (Render)")
+
     server = Server(port=port)
-    net = ServerClient()
-    if not net.connect("localhost", port):
-        raise SystemExit("Could not connect to local server")
+    print(f"Server running on port {port}")
+
+    # GEEN Ursina importeren
+    # GEEN C00lWorld importeren
+    # GEEN window openen
+    # GEEN game starten
+
+    while True:
+        pass  # keep server alive
+
 
 # -------------------------
-# MODE 3 = JOIN SERVER
+# MODE 1 & 3 = CLIENT (LOCAL)
+# Ursina mag WEL geladen worden
 # -------------------------
-elif mode == "3":
-    net = ServerClient()
-    if not net.connect(ip, port):
-        raise SystemExit(f"Could not connect to server {ip}:{port}")
-
-# -------------------------
-# CREATE GAME (ONE TIME!)
-# -------------------------
-if mode == "1":
-    game = C00lWorld()
 else:
-    game = C00lWorld(network=net)
+    from ezy3d import C00lWorld
+    from c00lnet import ServerClient
 
-# --------------------------------
-# START GAME (only if not mode 2)
-# --------------------------------
-if not mode == "2":
+    net = None
+
+    if mode == "3":
+        net = ServerClient()
+        if not net.connect(ip, port):
+            raise SystemExit(f"Could not connect to server {ip}:{port}")
+
+    game = C00lWorld(network=net)
     game.test_plane()
     game.start()
