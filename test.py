@@ -43,6 +43,6 @@ else:
 # --------------------------------
 # START GAME (only if not mode 2)
 # --------------------------------
-if mode != "2":
+if not mode == "2":
     game.test_plane()
     game.start()
